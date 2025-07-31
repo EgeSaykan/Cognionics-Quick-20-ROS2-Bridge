@@ -33,6 +33,7 @@ INSTALL_DIR="$BASE_DIR/install"
 MMLIB_DIR="$BASE_DIR/mmlib"
 XDFFILEIO_DIR="$BASE_DIR/xdffileio"
 EEGDEV_DIR="$BASE_DIR/eegdev"
+NEURO_DIR="$BASE_DIR/ros2neuro_quick20_ws"
 
 echo "[+] Cloning repositories..."
 git clone https://github.com/mmlabs-mindmaze/mmlib.git "$MMLIB_DIR"
@@ -89,5 +90,32 @@ echo "[+] Compiling eegdev..."
 make
 make install
 echo "[+] eegdev installed."
+
+
+cd "$BASE_DIR"
+echo "[+] installing ros2neuro_acquisition_eegdev"
+mkdir "$NEURO_DIR"
+cd "$NEURO_DIR"
+mkdir src
+cd src
+echo "[+] Cloning repo"
+git clone https://github.com/neurorobotics-iaslab/ros2neuro_acquisition.git
+git clone https://github.com/neurorobotics-iaslab/ros2neuro_acquisition_eegdev.git
+git clone https://github.com/neurorobotics-iaslab/ros2neuro_msgs.git
+git clone https://github.com/neurorobotics-iaslab/ros2neuro_data.git
+
+cd "$NEURO_DIR"
+
+# Adding library path
+export CMAKE_PREFIX_PATH=$HOME/Local/install:$CMAKE_PREFIX_PATH
+
+echo "[+] Building dependencies..."
+colcon build --packages-select ros2neuro_msgs ros2neuro_data ros2neuro_acquisition
+source "$NEURO_DIR/install/setup.bash"
+echo "[+] Dependencies built."
+
+echo "[+] Building ros2neuro_acquisition_eegdev..."
+colcon build --packages-select ros2neuro_acquisition_eegdev
+echo "[+] ros2neuro_acquisition_eegdev built."
 
 echo "Setup completed successfully."
