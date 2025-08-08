@@ -13,6 +13,7 @@ find_package(ros2neuro_msgs REQUIRED)
 find_package(ros2neuro_acquisition REQUIRED)
 
 find_package(GTest REQUIRED)
+find_package(ament_cmake_gtest REQUIRED)
 
 find_library(LSL_LIBRARIES lsl REQUIRED)
 find_path(LSL_INCLUDE_DIRS lsl_cpp.h REQUIRED)
