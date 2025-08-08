@@ -98,14 +98,9 @@ echo "[+] xdffileio installed."
 
 cd "$BASE_DIR"
 echo "[+] installing ros2neuro_acquisition_eegdev"
-mkdir "$NEURO_DIR"
-cd "$NEURO_DIR"
-mkdir src
-cd src
+cd "$NEURO_DIR/src"
 echo "[+] Cloning repo"
 git clone https://github.com/neurorobotics-iaslab/ros2neuro_acquisition.git
-# git clone https://github.com/neurorobotics-iaslab/ros2neuro_acquisition_eegdev.git
-git clone https://github.com/rosneuro/rosneuro_acquisition_lsl.git
 git clone https://github.com/neurorobotics-iaslab/ros2neuro_msgs.git
 git clone https://github.com/neurorobotics-iaslab/ros2neuro_data.git
 
