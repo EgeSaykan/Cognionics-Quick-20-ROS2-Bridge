@@ -1,5 +1,5 @@
 <library path="lib/libros2neuro_acquisition_lsl">
-  <class type="ros2neuro::LSLDevice" base_class_type="ros2neuro::Device">
+  <class type="rosneuro::LSLDevice" base_class_type="ros2neuro::Device">
     <description>This is the ROS2Neuro Acquisition LSL plugin.</description>
   </class>
 </library>

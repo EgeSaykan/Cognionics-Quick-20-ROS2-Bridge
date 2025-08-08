@@ -1,51 +1,52 @@
 #ifndef ROSNEURO_ACQUISITION_PLUGIN_LSLDEVICE_HPP
 #define ROSNEURO_ACQUISITION_PLUGIN_LSLDEVICE_HPP
 
-#include <errno.h>
-#include <string.h>
-#include <iostream>
-#include <cstring>
-#include <regex>
-#include <limits>
+#include <rclcpp/rclcpp.hpp>
+#include <pluginlib/class_list_macros.hpp>
+
 #include <lsl_cpp.h>
-#include <ros/ros.h>
-#include <pluginlib/class_list_macros.h>
-#include <rosneuro_data/NeuroData.hpp>
-#include <rosneuro_acquisition/Device.hpp>
-#include <gtest/gtest_prod.h>
+#include <iostream>
+#include <limits>
+#include <regex>
+#include <string>
+#include <cstring>
+
+#include <ros2neuro_data/NeuroData.hpp>
+#include <ros2neuro_acquisition/Device.hpp>
 
 namespace rosneuro {
-    class LSLDevice : public Device {
-        public:
-            LSLDevice(void);
-            LSLDevice(NeuroFrame* frame);
-            virtual ~LSLDevice(void);
-            bool Configure(NeuroFrame* frame, unsigned int framerate);
 
-            bool Setup(void);
-            bool Open(void);
-            bool Close(void);
-            bool Start(void);
-            bool Stop(void);
-            size_t Get(void);
-            size_t GetAvailable(void);
+class LSLDevice : public ros2neuro::Device {
+public:
+    LSLDevice(void);
+    LSLDevice(NeuroFrame* frame);
+    virtual ~LSLDevice(void);
 
-        private:
-            void destroy_lsl_structures(void);
+    bool Configure(NeuroFrame* frame, unsigned int framerate) override;
+    bool Setup(void) override;
+    bool Open(void) override;
+    bool Close(void) override;
+    bool Start(void) override;
+    bool Stop(void) override;
+    size_t Get(void) override;
+    size_t GetAvailable(void) override;
 
-            lsl::stream_inlet* stream_;
-            lsl::stream_info*  info_;
-            std::string		stream_name_;
-            std::string		stream_type_;
-            std::string		lsl_type_;
-            std::string		lsl_name_;
-            unsigned int	samplerate_;
-            unsigned int	framerate_;
+private:
+    void destroy_lsl_structures(void);
 
-            FRIEND_TEST(LSLDeviceTestSuite, Constructor);
-            FRIEND_TEST(LSLDeviceTestSuite, Destructor);
-    };
-    PLUGINLIB_EXPORT_CLASS(rosneuro::LSLDevice, rosneuro::Device)
-}
+private:
+    lsl::stream_inlet* stream_;
+    lsl::stream_info* info_;
+    std::string stream_name_;
+    std::string stream_type_;
+    std::string lsl_type_;
+    std::string lsl_name_;
+    unsigned int samplerate_;
+    unsigned int framerate_;
+};
 
-#endif
+} // namespace rosneuro
+
+PLUGINLIB_EXPORT_CLASS(rosneuro::LSLDevice, ros2neuro::Device)
+
+#endif  // ROSNEURO_ACQUISITION_PLUGIN_LSLDEVICE_HPP
