@@ -3,9 +3,4 @@ mmlib/
 xdffileio/
 install/
 eegdev/
-ros2neuro_quick20_ws/install/
-ros2neuro_quick20_ws/log/
-ros2neuro_quick20_ws/build/
-ros2neuro_quick20_ws/src/ros2neuro_acquisition
-ros2neuro_quick20_ws/src/ros2neuro_data
-ros2neuro_quick20_ws/src/ros2neuro_msgs
+ros2neuro_quick20_ws/

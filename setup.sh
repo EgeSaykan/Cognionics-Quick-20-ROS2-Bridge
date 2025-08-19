@@ -28,7 +28,7 @@ if [ "$OS" != "windows" ] && [ "$OS" != "linux" ]; then
 fi
 
 # Define base directory
-BASE_DIR="$HOME/Local"
+BASE_DIR="$( cd "$( dirname $0 )" && pwd )"
 INSTALL_DIR="$BASE_DIR/install"
 MMLIB_DIR="$BASE_DIR/mmlib"
 XDFFILEIO_DIR="$BASE_DIR/xdffileio"
@@ -38,14 +38,16 @@ NEURO_DIR="$BASE_DIR/ros2neuro_quick20_ws"
 echo "[+] Cloning repositories..."
 git clone https://github.com/mmlabs-mindmaze/mmlib.git "$MMLIB_DIR"
 git clone https://github.com/mmlabs-mindmaze/xdffileio.git "$XDFFILEIO_DIR"
-# git clone https://github.com/neurorobotics-iaslab/eegdev.git "$EEGDEV_DIR"
-
+git clone https://github.com/neurorobotics-iaslab/eegdev.git "$EEGDEV_DIR"
 
 echo "[+] Creating install directory..."
 mkdir -p "$INSTALL_DIR"
 
+mv "$BASE_DIR/etc" "$INSTALL_DIR"
+
 echo "[+] Building mmlib..."
 cd "$MMLIB_DIR"
+
 mkdir -p build && cd build
 ../autogen.sh
 ../configure --prefix="$INSTALL_DIR"
@@ -59,6 +61,7 @@ echo "[+] mmlib installed."
 
 echo "[+] Building xdffileio..."
 cd "$XDFFILEIO_DIR"
+
 mkdir -p build && cd build
 ../autogen.sh
 ../configure --prefix="$INSTALL_DIR" CPPFLAGS="-I$INSTALL_DIR/include" LDFLAGS="-L$INSTALL_DIR/lib -Wl,-rpath,$INSTALL_DIR/lib"
@@ -80,34 +83,54 @@ make install
 echo "[+] xdffileio installed."
 
 
-# echo "[+] Building eegdev..."
+echo "[+] Building eegdev..."
 
-# cd "$EEGDEV_DIR/src/plugins"
-# sed -i "23a#include <stdio.h>" fileout.c
+rm "$EEGDEV_DIR/src/core/opendev.c"
+mv "$BASE_DIR/opendev.c" "$EEGDEV_DIR/src/core"
+cd "$EEGDEV_DIR/src/plugins"
+sed -i "23a#include <stdio.h>" fileout.c
 
-# cd "$EEGDEV_DIR"
-# mkdir -p build && cd build
-# ../autogen.sh
-# ../configure --prefix="$INSTALL_DIR" CPPFLAGS="-I$INSTALL_DIR/include" LDFLAGS="-L$INSTALL_DIR/lib -Wl,-rpath,$INSTALL_DIR/lib" --with-q20
+cd "$EEGDEV_DIR"
 
-# echo "[+] Compiling eegdev..."
-# make
-# make install
-# echo "[+] eegdev installed."
+mkdir -p build && cd build
+../autogen.sh
+../configure --prefix="$INSTALL_DIR" CPPFLAGS="-I$INSTALL_DIR/include -I/usr/local/lib" LDFLAGS="-L$INSTALL_DIR/lib -L/usr/local/lib -Wl,-rpath,$INSTALL_DIR/lib -Wl,-rpath,/usr/local/lib" --with-q20
+
+echo "[+] Compiling eegdev..."
+make
+make install
+echo "[+] eegdev installed."
 
 
 cd "$BASE_DIR"
+mkdir "$NEURO_DIR" && cd "$NEURO_DIR"
+
 echo "[+] installing ros2neuro_acquisition_eegdev"
+mkdir "$NEURO_DIR/src" && cd "$NEURO_DIR/src"
 cd "$NEURO_DIR/src"
 echo "[+] Cloning repo"
 git clone https://github.com/neurorobotics-iaslab/ros2neuro_acquisition.git
+git clone https://github.com/neurorobotics-iaslab/ros2neuro_acquisition_eegdev.git
 git clone https://github.com/neurorobotics-iaslab/ros2neuro_msgs.git
 git clone https://github.com/neurorobotics-iaslab/ros2neuro_data.git
 
+rm "$NEURO_DIR/src/ros2neuro_acquisition_eegdev/CMakeLists.txt"
+mv "$BASE_DIR/CMakeLists.txt" "$NEURO_DIR/src/ros2neuro_acquisition_eegdev/CMakeLists.txt"
 cd "$NEURO_DIR"
 
 # Adding library path
-export CMAKE_PREFIX_PATH=$HOME/Local/install:$CMAKE_PREFIX_PATH
+grep -qxF "export LD_LIBRARY_PATH=$BASE_DIR/install/lib:\$LD_LIBRARY_PATH" ~/.bashrc || echo "export LD_LIBRARY_PATH=$BASE_DIR/install/lib:\$LD_LIBRARY_PATH" >> ~/.bashrc
+grep -qxF "export PKG_CONFIG_PATH=$BASE_DIR/install/lib/pkgconfig:\$PKG_CONFIG_PATH" ~/.bashrc || echo "export PKG_CONFIG_PATH=$BASE_DIR/install/lib/pkgconfig:\$PKG_CONFIG_PATH" >> ~/.bashrc
+grep -qxF "export CMAKE_PREFIX_PATH=$BASE_DIR/install:\$CMAKE_PREFIX_PATH" ~/.bashrc || echo "export CMAKE_PREFIX_PATH=$BASE_DIR/install:\$CMAKE_PREFIX_PATH" >> ~/.bashrc
+grep -qxF "export CMAKE_PREFIX_PATH=\$CMAKE_PREFIX_PATH:$BASE_DIR/ros2neuro_quick20_ws/install" ~/.bashrc || echo "export CMAKE_PREFIX_PATH=\$CMAKE_PREFIX_PATH:$BASE_DIR/ros2neuro_quick20_ws/install" >> ~/.bashrc
+grep -qxF "export LD_LIBRARY_PATH=/usr/lib:\$LD_LIBRARY_PATH" ~/.bashrc || echo "export LD_LIBRARY_PATH=/usr/lib:\$LD_LIBRARY_PATH" >> ~/.bashrc
+grep -qxF "export LD_LIBRARY_PATH=/lib:\$LD_LIBRARY_PATH" ~/.bashrc || echo "export LD_LIBRARY_PATH=/lib:\$LD_LIBRARY_PATH" >> ~/.bashrc
+grep -qxF "export LD_LIBRARY_PATH=/lib64:\$LD_LIBRARY_PATH" ~/.bashrc || echo "export LD_LIBRARY_PATH=/lib64:\$LD_LIBRARY_PATH" >> ~/.bashrc
+grep -qxF "export LD_LIBRARY_PATH=/usr/local/lib:\$LD_LIBRARY_PATH" ~/.bashrc || echo "export LD_LIBRARY_PATH=/usr/local/lib:\$LD_LIBRARY_PATH" >> ~/.bashrc
+grep -qxF "export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:\$LD_LIBRARY_PATH" ~/.bashrc || echo "export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:\$LD_LIBRARY_PATH" >> ~/.bashrc
+
+source /opt/ros/iron/setup.bash
+source ~/.bashrc
 
 echo "[+] Building dependencies..."
 colcon build --packages-select ros2neuro_msgs ros2neuro_data ros2neuro_acquisition
@@ -115,8 +138,9 @@ echo "$NEURO_DIR/install/setup.bash"
 echo "[+] Dependencies built."
 
 echo "[+] Building ros2neuro_acquisition_eegdev..."
-export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:/home/capture/Local/ros2neuro_quick20_ws/install
-colcon build --packages-select ros2neuro_acquisition_lsl
+
+colcon build --packages-select ros2neuro_acquisition_eegdev
 echo "[+] ros2neuro_acquisition_eegdev built."
 
-echo "Setup completed successfully."
+
+# echo "Setup completed successfully."
