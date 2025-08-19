@@ -134,11 +134,10 @@ source ~/.bashrc
 
 echo "[+] Building dependencies..."
 colcon build --packages-select ros2neuro_msgs ros2neuro_data ros2neuro_acquisition
-echo "$NEURO_DIR/install/setup.bash"
+source "$NEURO_DIR/install/setup.bash"
 echo "[+] Dependencies built."
 
 echo "[+] Building ros2neuro_acquisition_eegdev..."
-
 colcon build --packages-select ros2neuro_acquisition_eegdev
 echo "[+] ros2neuro_acquisition_eegdev built."
 
