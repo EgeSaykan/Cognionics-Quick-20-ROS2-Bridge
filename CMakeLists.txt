@@ -12,7 +12,7 @@ find_package(ros2neuro_msgs REQUIRED)
 find_package(ros2neuro_data REQUIRED)
 find_package(ros2neuro_acquisition REQUIRED)
 
-get_filename_component(WS_ROOT "${CMAKE_CURRENT_LIST_DIR}/../.." ABSOLUTE)
+get_filename_component(WS_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
 set(WS_INSTALL_LIB "${WS_ROOT}/install/lib")
 message("${WS_INSTALL_LIB}")
 find_library(EEGDEV_LIBRARIES eegdev
