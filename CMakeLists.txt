@@ -11,13 +11,17 @@ find_package(ament_cmake_ros REQUIRED)
 find_package(ros2neuro_msgs REQUIRED)
 find_package(ros2neuro_data REQUIRED)
 find_package(ros2neuro_acquisition REQUIRED)
+
+get_filename_component(WS_ROOT "${CMAKE_CURRENT_LIST_DIR}/../.." ABSOLUTE)
+set(WS_INSTALL_LIB "${WS_ROOT}/install/lib")
+message("${WS_INSTALL_LIB}")
 find_library(EEGDEV_LIBRARIES eegdev
-  HINTS "$ENV{HOME}/Desktop/ros2neuro_quick20_ws/install/lib"
+  HINTS "${WS_INSTALL_LIB}"
   NO_DEFAULT_PATH
   REQUIRED
 )
 find_path(EEGDEV_INCLUDE_DIRS eegdev.h 
-  HINTS "$ENV{HOME}/Desktop/ros2neuro_quick20_ws/install/include"
+  HINTS "${WS_INSTALL_LIB}"
   NO_DEFAULT_PATH
   REQUIRED
 )
