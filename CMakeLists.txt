@@ -14,6 +14,7 @@ find_package(ros2neuro_acquisition REQUIRED)
 
 get_filename_component(WS_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
 set(WS_INSTALL_LIB "${WS_ROOT}/install/lib")
+set(WS_INSTALL_INCLUDE "${WS_ROOT}/install/include")
 message("${WS_INSTALL_LIB}")
 find_library(EEGDEV_LIBRARIES eegdev
   HINTS "${WS_INSTALL_LIB}"
@@ -21,7 +22,7 @@ find_library(EEGDEV_LIBRARIES eegdev
   REQUIRED
 )
 find_path(EEGDEV_INCLUDE_DIRS eegdev.h 
-  HINTS "${WS_INSTALL_LIB}"
+  HINTS "${WS_INSTALL_INCLUDE}"
   NO_DEFAULT_PATH
   REQUIRED
 )
