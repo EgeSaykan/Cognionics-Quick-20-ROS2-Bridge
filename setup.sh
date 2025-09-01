@@ -129,7 +129,7 @@ grep -qxF "export LD_LIBRARY_PATH=/lib64:\$LD_LIBRARY_PATH" ~/.bashrc || echo "e
 grep -qxF "export LD_LIBRARY_PATH=/usr/local/lib:\$LD_LIBRARY_PATH" ~/.bashrc || echo "export LD_LIBRARY_PATH=/usr/local/lib:\$LD_LIBRARY_PATH" >> ~/.bashrc
 grep -qxF "export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:\$LD_LIBRARY_PATH" ~/.bashrc || echo "export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:\$LD_LIBRARY_PATH" >> ~/.bashrc
 
-source /opt/ros/iron/setup.bash
+source /opt/ros/humble/setup.bash   # Change to your ros distro
 source ~/.bashrc
 
 echo "[+] Building dependencies..."
@@ -142,4 +142,4 @@ colcon build --packages-select ros2neuro_acquisition_eegdev
 echo "[+] ros2neuro_acquisition_eegdev built."
 
 
-# echo "Setup completed successfully."
+echo "Setup completed successfully."
