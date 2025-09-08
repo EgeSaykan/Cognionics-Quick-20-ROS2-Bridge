@@ -102,8 +102,7 @@ make install
 echo "[+] eegdev installed."
 
 
-cd "$BASE_DIR"
-mkdir "$NEURO_DIR" && cd "$NEURO_DIR"
+cd "$NEURO_DIR"
 
 echo "[+] installing ros2neuro_acquisition_eegdev"
 mkdir "$NEURO_DIR/src" && cd "$NEURO_DIR/src"
@@ -140,6 +139,10 @@ echo "[+] Dependencies built."
 echo "[+] Building ros2neuro_acquisition_eegdev..."
 colcon build --packages-select ros2neuro_acquisition_eegdev
 echo "[+] ros2neuro_acquisition_eegdev built."
+
+echo "[+] Building ros2neuro_collect_data..."
+colcon build --packages-select ros2neuro_collect_data
+echo "[+] ros2neuro_collect_data built."
 
 
 echo "Setup completed successfully."
