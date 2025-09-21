@@ -140,9 +140,6 @@ echo "[+] Building ros2neuro_acquisition_eegdev..."
 colcon build --packages-select ros2neuro_acquisition_eegdev
 echo "[+] ros2neuro_acquisition_eegdev built."
 
-echo "[+] Building ros2neuro_collect_data..."
-colcon build --packages-select ros2neuro_collect_data
-echo "[+] ros2neuro_collect_data built."
 
 
 echo "Setup completed successfully."
