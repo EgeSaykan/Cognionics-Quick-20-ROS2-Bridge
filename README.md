@@ -48,3 +48,5 @@ ros2 topic echo \neurodata
 ## Data
 
 I have some data recorded into ros2neuro_quick20_ws/data.
+The data was recorded using a small robot arm game made on unity:
+https://github.com/EgeSaykan/Unity-Ros2-RobotArmSimulation
